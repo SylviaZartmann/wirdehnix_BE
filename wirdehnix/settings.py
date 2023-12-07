@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-l2_aa_ny!r^lo=jsqn86y^0c^jkw#0i=p3o+839ttohvsw5sqi
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '34.32.23.93',
     'localhost',
     '127.0.0.1',
     'siehstehnix.sylviazartmann.de'
