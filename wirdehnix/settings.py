@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'filmography',
+    'filmography.apps.ContentConfig',
     'rest_framework',
     'debug_toolbar',
     'django_rq'    
@@ -157,4 +157,18 @@ RQ_QUEUES = {
         'PASSWORD': 'foobared',
         'DEFAULT_TIMEOUT': 360,
     },
+}
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+STATIC_ROOT = '/home/Sunsonella/wirdehnix/static'
+STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = 'authentication.CustomUser'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
