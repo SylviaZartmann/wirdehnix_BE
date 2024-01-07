@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication',
-    'filmography.apps.ContentConfig',
+    'filmography.apps.FilmographyConfig',
     'rest_framework',
     'debug_toolbar',
-    'django_rq'    
+    'django_rq',
+    'import_export',    
 ]
 
 MIDDLEWARE = [
@@ -163,8 +164,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_ROOT = '/home/Sunsonella/wirdehnix/static'
 STATIC_URL = '/static/'
-
-AUTH_USER_MODEL = 'authentication.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

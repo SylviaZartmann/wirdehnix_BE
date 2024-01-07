@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -6,8 +7,6 @@ from authentication.serializer import UserSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
-
-from .models import CustomUser
 
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -24,8 +23,6 @@ class RegisterView(APIView):
     
 
 
-# muss noch geändert werden. 
-# einloggen erfolgt mit email und passwort, nicht mit username
 class LoginView(APIView):
     
     def post(self, request):
@@ -34,7 +31,7 @@ class LoginView(APIView):
         user = None
         if '@' in username:
             try:
-                user = CustomUser.objects.get(email=username)
+                user = User.objects.get(email=username)
             except ObjectDoesNotExist:
                 pass
 

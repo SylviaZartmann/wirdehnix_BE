@@ -1,7 +1,7 @@
 from django.db import models
 
 class Filmography(models.Model):
-    title = models.Charfield(max_length=80)
+    title = models.CharField(max_length=80)
     description = models.CharField(max_length=500)
     video_file = models.FileField(upload_to='videos', blank=True, null=True)
     video_file_480p = models.FileField(upload_to='videos', blank=True, null=True)

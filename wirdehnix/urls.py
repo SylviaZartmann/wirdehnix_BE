@@ -11,10 +11,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('__debug__/', include('debug_toolbar.urls')),
     path('django-rq/', include('django_rq.urls')),
-    #path('filmography/', admin.site.urls),
-    #path('authentication/', admin.site.urls),
-    path('', include('accounts.urls')),
-    path('', include(router.urls)),
+    path('authentication/', include('authentication.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
