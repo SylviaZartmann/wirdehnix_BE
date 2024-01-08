@@ -26,17 +26,17 @@ class RegisterView(APIView):
 class LoginView(APIView):
     
     def post(self, request):
-        username = request.data.get('email')
+        email = request.data.get('email')
         password = request.data.get('password')
         user = None
-        if '@' in username:
+        if '@' in email:
             try:
-                user = User.objects.get(email=username)
+                user = User.objects.get(email=email)
             except ObjectDoesNotExist:
                 pass
 
         if not user:
-            user = authenticate(username=username, password=password)
+            user = authenticate(email=email, password=password)
 
         if user:
             token, created = Token.objects.get_or_create(user=user)
