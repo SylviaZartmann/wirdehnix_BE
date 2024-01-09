@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv # für variablen, die wir nicht auf den Server laden und zugänglich machen (pip install django-dotenv)
-load_dotenv()
+# from dotenv import load_dotenv # für variablen, die wir nicht auf den Server laden und zugänglich machen (pip install django-dotenv)
+# load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'authentication',
     'filmography.apps.FilmographyConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'debug_toolbar',
     'django_rq',
     'import_export',    

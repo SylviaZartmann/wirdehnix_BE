@@ -4,20 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
 from . import utils
-
-# Serializers define the API representation.
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = '__all__'
-
 
 class RegisterSerializer(serializers.ModelSerializer): # es wird ein Modellobjekt erstellt bzw. aktualisiert, deswegen ModelSerializer
     conf_password = serializers.CharField(write_only=True) # wird temporär angelegt, für die Registrierung ist auch ohne customUser da, weil nicht dauerhaft in Datenbank
@@ -55,16 +46,11 @@ class RegisterSerializer(serializers.ModelSerializer): # es wird ein Modellobjek
 
     def create(self, valid_data):
         del valid_data["conf_password"]
-        new_user = get_user_model().objects.create_user(**valid_data)
+        new_user = User.objects.create(**valid_data)
         new_user.is_active = False
         new_user.save()
         
-        confirmation_token = default_token_generator.make_token(new_user)
-        uid = urlsafe_base64_encode(force_bytes(new_user.pk)) # um eine URL-sichere Codierung der Benutzer-ID (Primary Key) zu erstellen
-        
-        utils.send_activationmail_to_user(new_user, confirmation_token, uid)
-
-        return {"user": new_user, "uid": uid, "token": confirmation_token}
+        return new_user
     
 
 # email an Registrator ?      

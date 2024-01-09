@@ -1,7 +1,12 @@
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-def send_activationmail_to_user(new_user, confirmation_token, uid):
-    confirmation_link = f"https://wirdehnix.sylviazartmann.de/confirm-registration/?uid={uid}&token={confirmation_token}" # Bestätigungslink erstellen
+from django.contrib.auth.models import User
+
+def send_activationmail_to_user(new_user, token):
+    confirmation_link = f"https://wirdehnix.sylviazartmann.de/confirm-registration/{token}" # Bestätigungslink erstellen
 
     message = f"Hi {new_user.username},\n\nPlease click the following link to activate your account:\n{confirmation_link}"
         
@@ -21,3 +26,10 @@ def gibbet_den_user(email, password):
         # warum auch immer gehts hier in die view ?! 
     except user.DoesNotExist:
         return None
+    
+@api_view(('GET',)) # wir haben einen Get Request aus dem Frontend
+def activate_user(request, token):
+    user = get_object_or_404(User, auth_token=token)
+    user.is_active = True
+    user.save()
+    return Response({'message': 'User activated successfully.'})

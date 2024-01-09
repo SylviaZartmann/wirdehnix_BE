@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authentication.serializer import UserSerializer
+from authentication.serializer import RegisterSerializer
 
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
@@ -11,14 +12,19 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
-
+from . import utils
 class RegisterView(APIView):
 
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save() # das erste, weil sonst nicht validated_data verarbeitet werden kann
+            user = get_user_model().objects.get(email=serializer.validated_data['email'])
+            token, created = Token.objects.get_or_create(user=user)
+        #    utils.send_activationmail_to_user(serializer.validated_data, token)
+            
+            return Response({'username': user.username, 'email': user.email, 'token': token.key}, status=status.HTTP_201_CREATED)
+                 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
