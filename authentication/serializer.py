@@ -55,55 +55,36 @@ class RegisterSerializer(serializers.ModelSerializer): # es wird ein Modellobjek
 
 # email an Registrator ?      
 
-class ActivateUserSerializer(serializers.Serializer): # gibt dir mehr Flexibilität, ermöglicht es, benutzerdefinierte Validierungslogik ohne die automatische Modellerstellungsfunktionalität bereitzustellen       
-    token = serializers.CharField() # vorübergehend ein Feld erstellen, was es danach so nicht mehr gibt
+# class ActivateUserSerializer(serializers.Serializer): # gibt dir mehr Flexibilität, ermöglicht es, benutzerdefinierte Validierungslogik ohne die automatische Modellerstellungsfunktionalität bereitzustellen       
+#     token = serializers.CharField() # vorübergehend ein Feld erstellen, was es danach so nicht mehr gibt
         
-    def val_token(self, value):
+#     def val_token(self, value):
             
-        for new_user in get_user_model().objects.filter(is_active=False): # in vorheriger Funktion eingefügt
-            if default_token_generator.check_token(new_user, value): # wir checken in den Benutzern, ob das übergebene Token mit einem vorhandenen Token übereinstimmt
-                new_user.is_active = True # trifft es einen Token, wird is_active auf True gesetzt
-                new_user.save() # die Änderungen werden gespeichert
-                return value # geben alles zurück
+#         for new_user in get_user_model().objects.filter(is_active=False): # in vorheriger Funktion eingefügt
+#             if default_token_generator.check_token(new_user, value): # wir checken in den Benutzern, ob das übergebene Token mit einem vorhandenen Token übereinstimmt
+#                 new_user.is_active = True # trifft es einen Token, wird is_active auf True gesetzt
+#                 new_user.save() # die Änderungen werden gespeichert
+#                 return value # geben alles zurück
             
-        raise serializers.ValidationError("Token provided is invalid!") # wenn kein passender Benutzer gefunden wird, gibts nen Fehler
-        
+#         raise serializers.ValidationError("Token provided is invalid!") # wenn kein passender Benutzer gefunden wird, gibts nen Fehler
         
 
 class LoginSerializer(serializers.Serializer): # wir wollen mit email und passwort einloggen
     email = serializers.EmailField(required=True) # vorübergehend vorhandene Daten, die nicht gespeichert werden, nur abgeglichen
     password = serializers.CharField(write_only=True, required=True)
-    
-
-    
-    def val_login(self, data):
-        user = utils.gibbet_den_user(data.email, data.password) # schreibweise ggfs ["email"] - kompletter user wird returnt - spezielle data wird gecheckt
+      
+    def validate(self, data):
+        user = utils.gibbet_den_user(data["email"], data["password"]) # schreibweise ggfs ["email"] - kompletter user wird returnt - spezielle data wird gecheckt
         if user: #wird nur returnt, wenn passwort korrekt
             if user.is_active:
                 return {'username': user.username, 'email': user.email, 'password': user.password} # in der view, falls ma das brauchen - in der view wird der serializer aufgerufen
-        raise serializers.ValidationError("Incorrect logindata")
+        raise serializers.ValidationError("Invalid login data")
     
     
 # class LogoutSerializer():
     
     
-    
-#validation of action and data
-
-# registration - validation of passwords, 
-# or is non existing and needs to be created
-# password and confirmed password should match
-# validate if password is secure
-# validation of email address
-
 # new user gets token via email to register
-# validate token - and new user create or active
-
-# login with email and password
-# email belongs to registered user
-# email and password geo together
-# give user token - user keeps old token? - nä, da war was
-# if its a correct password for existing user
 
 # do we want to change passowrds ?!
 # validate email and send new token or activation link in email with token
