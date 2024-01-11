@@ -11,8 +11,8 @@ def convert_video(source, resolution):
         Create the name of the new file with the desired resolution 
         Define the available resolution options
     """
-    
-    source_name, source_extension = os.path.splitext(source)[0]
+
+    source_name, source_extension = os.path.splitext(source)
     new_name = f'{source_name}_{resolution}.mp4'
     
     resolution_options = {

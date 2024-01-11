@@ -12,6 +12,7 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('django-rq/', include('django_rq.urls')),
     path('authentication/', include('authentication.urls')),
+    path('filmography/', include('filmography.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

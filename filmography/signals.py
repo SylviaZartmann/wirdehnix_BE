@@ -16,11 +16,12 @@ def video_post_save(sender, instance, created, **kwargs):
     
     print("Video was saved")
     if created:
-        print("New video was created")                              
-        queue = django_rq.get_queue("default", autocommit=True)     
-        resolutions = ["480p", "720p", "1080p"]                     
-        for resolution in resolutions:                              
+                                     
+        queue = django_rq.get_queue("default", autocommit=True)
+        resolutions = ["480p", "720p", "1080p"]                 
+        for resolution in resolutions:                             
             queue.enqueue(convert_video, instance.video_file.path, resolution)
+            
 
 
 # DONT TOUCH !
