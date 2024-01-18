@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -10,17 +11,34 @@ from django.core.validators import validate_email
 
 from . import utils
 
-class RegisterSerializer(serializers.ModelSerializer): # es wird ein Modellobjekt erstellt bzw. aktualisiert, deswegen ModelSerializer
-    conf_password = serializers.CharField(write_only=True) # wird temporär angelegt, für die Registrierung ist auch ohne customUser da, weil nicht dauerhaft in Datenbank
+class RegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    password = serializers.CharField(write_only=True, min_length=8)
+    conf_password = serializers.CharField(write_only=True)
     
     class Meta: 
         model = get_user_model()   
         fields = ('username', 'email', 'password', 'conf_password')
+        
+    def validation(self, value):
+        
+        username = value['username']
+        if get_user_model().objects.filter(username=username).exists():
+            raise serializers.ValidationError('Username already exists!')
+       
+        email = value['email']   
+        try:
+            validate_email(email) # Django built in Funktion, überprüft, ob valide Email Addresse
+        except ValidationError: 
+            raise serializers.ValidationError('Email address invalid!')
+        if get_user_model().objects.filter(email=email).exists():
+            raise serializers.ValidationError('Email already exists!')
     
-    # mit value ist die Liste in fields gemeint - alle werte aus der Liste sind in "value" gespeichert und werden nachfolgend einzeln herausgelesen    
-    def val_password(self, value):    
-        password = value.get('password')   
-        conf_password = value.get('conf_password')   
+        password = value['password'] 
+        conf_password = value['conf_password']
         
         if password != conf_password:
             raise serializers.ValidationError('No matching passwords!')
@@ -33,20 +51,9 @@ class RegisterSerializer(serializers.ModelSerializer): # es wird ein Modellobjek
             
         return value # Wenn Passwort den Anforderungen entspricht, wird das ursprüngliche Passwort zurückgegeben.
         
-      
-    def val_email(self, value):      
-        email = value.get('email')      
-        
-        try:
-            validate_email(email) # Django built in Funktion, überprüft, ob valide Email Addresse
-        except ValidationError: 
-            raise serializers.ValidationsError('Email address invalid!')
-        return value
-        
-
     def create(self, valid_data):
         del valid_data["conf_password"]
-        new_user = User.objects.create(**valid_data)
+        new_user = get_user_model().objects.create(**valid_data)
         new_user.is_active = False
         new_user.save()
         

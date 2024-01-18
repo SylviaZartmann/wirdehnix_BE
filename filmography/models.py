@@ -2,10 +2,10 @@ import datetime
 from django.db import models
 
 CATEGORY_CHOICE = [
-    ('F', 'Fiction'),
-    ('D', 'Documentary'),
-    ('A', 'Animation'),
-    ('H', 'Horror')
+    ('Fiction', 'Fiction'),
+    ('Documentary', 'Documentary'),
+    ('Animation', 'Animation'),
+    ('Horror', 'Horror')
 ]
 class Filmography(models.Model):
     title = models.CharField(max_length=80)

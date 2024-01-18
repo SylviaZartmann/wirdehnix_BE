@@ -14,6 +14,7 @@ class FilmoAdmin(ImportExportModelAdmin):
     fields = (
         "title",
         "description",
+        "category",
         "video_file",
         "video_file_480p",
         "video_file_720p",

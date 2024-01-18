@@ -6,19 +6,20 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes, authentication_classes, parser_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import JSONParser, FormParser
 
 from authentication.serializer import LoginSerializer, RegisterSerializer
 from . import utils
 
-
+@permission_classes((AllowAny,))
 class RegisterView(APIView):
-
     def post(self, request):
+        print('request', request.data)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save() # das erste, weil sonst nicht validated_data verarbeitet werden kann
@@ -28,6 +29,11 @@ class RegisterView(APIView):
         #    active User muss noch ausgeführt werden, um den User zu aktivieren nach der Mail
             return Response({'username': user.username, 'email': user.email, 'token': token.key}, status=status.HTTP_201_CREATED)
                  
+        if 'username'in serializer.errors: 
+            return Response('Username already exists!', status=status.HTTP_400_BAD_REQUEST)
+        if "email" in serializer.errors:
+            return Response('Email already exists!', status=status.HTTP_400_BAD_REQUEST)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
