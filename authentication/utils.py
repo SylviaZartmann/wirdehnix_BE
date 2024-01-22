@@ -1,28 +1,28 @@
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes, api_view
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import get_user_model
 
 from django.contrib.auth.models import User
 
 # wird in  RegisterView aufgerufen
 def send_activationmail_to_user(new_user, token):
-    confirmation_link = f"https://wirdehnix.sylviazartmann.de/confirm-registration/{token}" # Bestätigungslink erstellen
-
+    confirmation_link = f"http://localhost:4200/confirm-registration/{token}" # Bestätigungslink erstellen
     message = f"Hi {new_user.username},\n\nPlease click the following link to activate your account:\n{confirmation_link}"
-        
     send_mail(
         "Account Activation",
         message,
-        "noreply@wirdehnix.com",
+        "contact@sylviazartmann.de",
         [new_user.email],
         fail_silently=False,
     )
     
     
-# wird in RegisterView aufgerufen    
-@api_view(('GET',)) # wir haben einen Get Request aus dem Frontend
+# wird in Urls aufgerufen    
+@api_view(('GET', )) # wir haben einen Get Request aus dem Frontend
+@permission_classes((AllowAny,))
 def activate_user(request, token):
     user = get_object_or_404(User, auth_token=token)
     user.is_active = True

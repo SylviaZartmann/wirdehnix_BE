@@ -19,14 +19,12 @@ from . import utils
 @permission_classes((AllowAny,))
 class RegisterView(APIView):
     def post(self, request):
-        print('request', request.data)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save() # das erste, weil sonst nicht validated_data verarbeitet werden kann
             user = get_user_model().objects.get(email=serializer.validated_data['email'])
             token, created = Token.objects.get_or_create(user=user)
-        #    utils.send_activationmail_to_user(serializer.validated_data, token)
-        #    active User muss noch ausgeführt werden, um den User zu aktivieren nach der Mail
+            utils.send_activationmail_to_user(user, token)
             return Response({'username': user.username, 'email': user.email, 'token': token.key}, status=status.HTTP_201_CREATED)
                  
         if 'username'in serializer.errors: 
@@ -67,7 +65,7 @@ class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht
                             
         else: # das ist der Teil, wenn serializer is nicht valid! Warum auch immer .. 
             email = serializer.data.get('email')
-            if not email: # hier sieht marijan probleme, weil not statt nix
+            if not email: 
                 return Response('Email is missing!', status=status.HTTP_400_BAD_REQUEST)
         
             try:
@@ -80,15 +78,11 @@ class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht
                 return Response('User not born yet!', status=status.HTTP_404_NOT_FOUND)
             return Response('Invalid data', status=status.HTTP_400_BAD_REQUEST)                
 
-@permission_classes((IsAuthenticated,)) # Copilot sagt, macht Sinn, weil mans sonst gar nicht sehen kann
+@permission_classes((IsAuthenticated,)) # macht Sinn, weil mans sonst gar nicht sehen kann
 @authentication_classes((TokenAuthentication,)) 
 class LogoutView(APIView):
     
     def post(self, request):
-        #token soll im header gesendet werden ?!
-        # bei  Postman in den Header geschrieben und logout successfull bekommen
-        # wie krieg ich den header jetzt hier rein? - gar nicht
-        # token muss bei jeder Anfrage mitgeschickt werden, damit der User authentifiziert werden kann
                 
         try:
             user = request.user

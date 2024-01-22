@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-# from dotenv import load_dotenv # für variablen, die wir nicht auf den Server laden und zugänglich machen (pip install django-dotenv)
-# load_dotenv()
+from dotenv import load_dotenv  # für variablen, die wir nicht auf den Server laden und zugänglich machen (pip install django-dotenv)
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,10 +35,21 @@ ALLOWED_HOSTS = [
     'siehstehnix.sylviazartmann.de'
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
-    
-# ]
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "https://siehstehnix.sylviazartmann.de",
+    "https://wirdehnix.sylvia-zartmann.de",
+    "http://localhost:4200",
+    "http://127.0.0.1:8000"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://siehstehnix.sylviazartmann.de",
+    "https://wirdehnix.sylvia-zartmann.de",
+    "http://localhost:4200",
+    "http://127.0.0.1:8000"
+]
+
 
 # Application definition
 
@@ -189,13 +200,12 @@ REST_FRAMEWORK = {
 }
 
 
-
 # Email settings
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_PORT = os.environ.get('EMAIL_PORT') 
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST = os.environ.get('EMAIL_SERVER', 'localhost')
-EMAIL_HOST_USER = os.environ.get('EMAIL_SENDER')
+EMAIL_HOST = os.environ.get('EMAIL_SERVER') 
+EMAIL_HOST_USER = os.environ.get('EMAIL_SENDER') 
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PARSE')

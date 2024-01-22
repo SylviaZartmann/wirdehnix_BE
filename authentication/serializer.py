@@ -54,13 +54,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, valid_data):
         del valid_data["conf_password"]
         new_user = get_user_model().objects.create(**valid_data)
+        new_user.set_password(valid_data["password"])
         new_user.is_active = False
         new_user.save()
         
         return new_user
     
 
-# email an Registrator ?      
 
 # class ActivateUserSerializer(serializers.Serializer): # gibt dir mehr Flexibilität, ermöglicht es, benutzerdefinierte Validierungslogik ohne die automatische Modellerstellungsfunktionalität bereitzustellen       
 #     token = serializers.CharField() # vorübergehend ein Feld erstellen, was es danach so nicht mehr gibt
@@ -87,12 +87,3 @@ class LoginSerializer(serializers.Serializer): # wir wollen mit email und passwo
                 return {'username': user.username, 'email': user.email, 'password': user.password} # in der view, falls ma das brauchen - in der view wird der serializer aufgerufen
         raise serializers.ValidationError("Invalid login data")
     
-    
-# class LogoutSerializer():
-    
-    
-# new user gets token via email to register
-
-# do we want to change passowrds ?!
-# validate email and send new token or activation link in email with token
-# overwrite old password with new confirmed password
