@@ -30,25 +30,25 @@ SECRET_KEY = 'django-insecure-l2_aa_ny!r^lo=jsqn86y^0c^jkw#0i=p3o+839ttohvsw5sqi
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
+   # 'localhost',
+   # '127.0.0.1',
     'siehstehnix.sylviazartmann.de',
-    '34.32.23.93'
+   # '34.32.23.93'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://siehstehnix.sylviazartmann.de",
     "https://wirdehnix.sylviazartmann.de",
-    "http://localhost:4200",
-    "http://127.0.0.1:8000"
+  #  "http://localhost:4200",
+   # "http://127.0.0.1:8000"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://siehstehnix.sylviazartmann.de",
     "https://wirdehnix.sylviazartmann.de",
-    "http://localhost:4200",
-    "http://127.0.0.1:8000"
+    #"http://localhost:4200",
+   # "http://127.0.0.1:8000"
 ]
 
 

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 # wird in  RegisterView aufgerufen
 def send_activationmail_to_user(new_user, token):
-    confirmation_link = f"http://localhost:4200/confirm-registration/{token}" # Bestätigungslink erstellen
+    confirmation_link = f"https://wirdehnix.sylviazartmann.de/confirm-registration/{token}" # Bestätigungslink erstellen
     message = f"Hi {new_user.username},\n\nPlease click the following link to activate your account:\n{confirmation_link}"
     send_mail(
         "Account Activation",
