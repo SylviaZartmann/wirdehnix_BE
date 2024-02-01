@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 # wird in  RegisterView aufgerufen
 def send_activationmail_to_user(new_user, token):
     confirmation_link = f"https://wirdehnix.sylviazartmann.de/confirm-registration/{token}" # Bestätigungslink erstellen
+
     message = f"Hi {new_user.username},\n\nPlease click the following link to activate your account:\n{confirmation_link}"
     send_mail(
         "Account Activation",
@@ -38,3 +39,19 @@ def gibbet_den_user(email, password):
             return user # wir geben den user als solchen zurück, weil passt
     except get_user_model().DoesNotExist:
         return None
+    
+def change_password(email, new_pw, new_confpw):
+    if new_pw != new_confpw:
+        raise Exception("Missmatched passwords.")
+
+    user = get_user_model().objects.get(email=email)
+    user.set_password(new_pw)
+
+    send_mail(
+        "Your password has been successfully changed",
+
+        [user.email],
+        fail_silently=False,
+    )
+
+    user.save()
