@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.forms import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes, api_view
@@ -40,18 +41,20 @@ def gibbet_den_user(email, password):
     except get_user_model().DoesNotExist:
         return None
     
+    
 @api_view(('POST', )) # wir haben einen Request aus dem Frontend
 @permission_classes((AllowAny,))
 def change_password(email, new_pw, new_confpw):
     if new_pw != new_confpw:
-        raise Exception("Missmatched passwords.")
+        raise ValidationError("Missmatched passwords.")
 
     user = get_user_model().objects.get(email=email)
     user.set_password(new_pw)
 
     send_mail(
         "Your password has been successfully changed",
-
+        "Your new password is now active.",  
+        None,
         [user.email],
         fail_silently=False,
     )
