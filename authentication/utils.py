@@ -40,6 +40,8 @@ def gibbet_den_user(email, password):
     except get_user_model().DoesNotExist:
         return None
     
+@api_view(('POST', )) # wir haben einen Request aus dem Frontend
+@permission_classes((AllowAny,))
 def change_password(email, new_pw, new_confpw):
     if new_pw != new_confpw:
         raise Exception("Missmatched passwords.")
@@ -53,5 +55,4 @@ def change_password(email, new_pw, new_confpw):
         [user.email],
         fail_silently=False,
     )
-
     user.save()
