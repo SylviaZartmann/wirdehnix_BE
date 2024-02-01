@@ -44,7 +44,12 @@ def gibbet_den_user(email, password):
     
 @api_view(('POST', )) # wir haben einen Request aus dem Frontend
 @permission_classes((AllowAny,))
-def change_password(email, new_pw, new_confpw):
+def change_password(request):
+    email = request.data.get('email')
+    new_pw = request.data.get('password')
+    new_confpw = request.data.get('conf_password')
+
+    
     if new_pw != new_confpw:
         raise ValidationError("Missmatched passwords.")
 
@@ -54,8 +59,9 @@ def change_password(email, new_pw, new_confpw):
     send_mail(
         "Your password has been successfully changed",
         "Your new password is now active.",  
-        None,
-        [user.email],
+        "contact@sylviazartmann.de",
+        [email],
         fail_silently=False,
     )
     user.save()
+    return Response({'message': 'Password changed successfully.'}) 
