@@ -55,7 +55,7 @@ def send_pw_reset_mail(request):
         
     token = Token.objects.get_or_create(user=user)
     
-    reset_link = f"https://wirdehnix.sylviazartmann.de/changePW/confirm/{token}"
+    reset_link = f"https://wirdehnix.sylviazartmann.de/changePW/confirm/{token.key}"
     message = f"Hi {user.username},\n\nPlease click the following link to reset your password:\n{reset_link}"
     send_mail(
         "Change Password",
