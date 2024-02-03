@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'siehstehnix.sylviazartmann.de',
-    '34.32.23.71'
+    '34.32.41.71'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False

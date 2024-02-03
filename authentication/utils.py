@@ -44,7 +44,7 @@ def gibbet_den_user(email, password):
     except get_user_model().DoesNotExist:
         return None
 
-@api_view(('GET', )) # wir haben einen Get Request aus dem Frontend
+@api_view(('POST', )) # wir haben einen Get Request aus dem Frontend
 @permission_classes((AllowAny,))
 def send_pw_reset_mail(request):
     try:
