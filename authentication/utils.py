@@ -77,11 +77,11 @@ def change_password(request, **kwargs): # **kwargs for the token - unexpected er
         if new_pw != new_confpw:
             raise ValidationError("Mismatched passwords.")
 
-        user = User.objects.get(auth_token=token) # abkack
-        print(user, file="/var/log/prints")
-        print(user.password, file="/var/log/prints")
+        user = get_object_or_404(User, auth_token=token) # abkack
+        print(user) #print(user, file="/var/log/prints")
+        print(user.password)
         user.set_password(new_pw)
-        print(user.password, file="/var/log/prints")
+        print(user.password)
         user.save()
 
         return Response({'message': 'Password changed successfully.'})
