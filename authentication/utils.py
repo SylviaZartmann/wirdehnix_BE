@@ -76,7 +76,7 @@ def change_password(request):
     if new_pw != new_confpw:
         raise ValidationError("Missmatched passwords.")
 
-    user = get_user_model().objects.get(token=token)
+    user = get_user_model().objects.get(auth_token=token)
     user.set_password(new_pw)
     
     user.save()
