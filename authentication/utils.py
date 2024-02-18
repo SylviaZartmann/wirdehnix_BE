@@ -69,14 +69,14 @@ def send_pw_reset_mail(request):
 @api_view(('POST', )) # wir haben einen Request aus dem Frontend
 @permission_classes((AllowAny,))
 def change_password(request):
-    email = request.data.get('email')
+    token = request.data.get('token')
     new_pw = request.data.get('password')
     new_confpw = request.data.get('conf_password')
 
     if new_pw != new_confpw:
         raise ValidationError("Missmatched passwords.")
 
-    user = get_user_model().objects.get(email=email)
+    user = get_user_model().objects.get(token=token)
     user.set_password(new_pw)
     
     user.save()

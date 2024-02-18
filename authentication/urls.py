@@ -5,7 +5,7 @@ from .views import RegisterView, LoginView, LogoutView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
-    path('register/confirm/<str:token>/', activate_user, name='activate_user'), #send_pw_reset_mail
+    path('register/confirm/<str:token>/', activate_user, name='activate_user'), 
     path('mailresetPW/', send_pw_reset_mail, name='reset_password'),
     path('changePW/confirm/<str:token>/', change_password, name='change_password'),
     path('login/', LoginView.as_view(), name='login'),
