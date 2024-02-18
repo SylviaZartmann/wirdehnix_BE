@@ -71,15 +71,18 @@ def send_pw_reset_mail(request):
 def change_password(request, **kwargs): # **kwargs for the token - unexpected error otherwise - coz unexpected keywordargument "token"
     try:
         token = kwargs.get('token')
-        new_pw = request.POST.get('password') 
-        new_confpw = request.POST.get('conf_password')
+        new_pw = request.get('password') 
+        new_confpw = request.get('conf_password')
         print(new_pw)
 
         if new_pw != new_confpw:
             raise ValidationError("Mismatched passwords.")
 
         user = get_user_model().objects.get(auth_token=token)
+        print(user)
+        print(user.password)
         user.set_password(new_pw)
+        print(user.password)
         user.save()
 
         return Response({'message': 'Password changed successfully.'})
