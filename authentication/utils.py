@@ -68,9 +68,9 @@ def send_pw_reset_mail(request):
     
 @api_view(('POST', )) # wir haben einen Request aus dem Frontend
 @permission_classes((AllowAny,))
-def change_password(request):
+def change_password(request, **kwargs): # **kwargs for the token - unexpected error otherwise - coz unexpected keywordargument "token"
     try:
-        token = request.data.get('token')
+        token = kwargs.data.get('token')
         new_pw = request.data.get('password')
         new_confpw = request.data.get('conf_password')
 
