@@ -78,10 +78,7 @@ def change_password(request, **kwargs): # **kwargs for the token - unexpected er
             raise ValidationError("Mismatched passwords.")
 
         user = get_object_or_404(User, auth_token=token) # abkack
-        print(user) #print(user, file="/var/log/prints")
-        print(user.password)
         user.set_password(new_pw)
-        print(user.password)
         user.save()
 
         return Response({'message': 'Password changed successfully.'})
