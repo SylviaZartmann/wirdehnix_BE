@@ -73,6 +73,7 @@ def change_password(request, **kwargs): # **kwargs for the token - unexpected er
         token = kwargs.get('token')
         new_pw = request.POST.get('password') 
         new_confpw = request.POST.get('conf_password')
+        print(new_pw)
 
         if new_pw != new_confpw:
             raise ValidationError("Mismatched passwords.")
