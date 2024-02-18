@@ -70,7 +70,7 @@ def send_pw_reset_mail(request):
 @permission_classes((AllowAny,))
 def change_password(request, **kwargs): # **kwargs for the token - unexpected error otherwise - coz unexpected keywordargument "token"
     try:
-        token = kwargs.data.get('token')
+        token = kwargs.get('token')
         new_pw = request.POST.get('password') 
         new_confpw = request.POST.get('conf_password')
 
