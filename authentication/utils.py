@@ -71,18 +71,17 @@ def send_pw_reset_mail(request):
 def change_password(request, **kwargs): # **kwargs for the token - unexpected error otherwise - coz unexpected keywordargument "token"
     try:
         token = kwargs.get('token')
-        new_pw = request.get('password') 
-        new_confpw = request.get('conf_password')
-        print(new_pw)
+        new_pw = request.data.get('password')
+        new_confpw = request.data.get('conf_password') 
 
         if new_pw != new_confpw:
             raise ValidationError("Mismatched passwords.")
 
-        user = get_user_model().objects.get(auth_token=token)
-        print(user)
-        print(user.password)
+        user = User.objects.get(auth_token=token) # abkack
+        print(user, file="log.prints")
+        print(user.password, file="log.prints")
         user.set_password(new_pw)
-        print(user.password)
+        print(user.password, file="log.prints")
         user.save()
 
         return Response({'message': 'Password changed successfully.'})
@@ -91,5 +90,4 @@ def change_password(request, **kwargs): # **kwargs for the token - unexpected er
         raise ValidationError("Invalid token or user not found.")
     
     except Exception as e:
-        # Handle other exceptions as needed
         raise ValidationError(f"An error occurred: {str(e)}")
