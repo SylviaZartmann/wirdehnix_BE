@@ -14,7 +14,8 @@ def video_post_save(sender, instance, created, **kwargs):
     # Define resolutions to convert the video to
     # Enqueue background jobs to convert the video to different resolutions
     
-    print("1. Statement")
+    print("1. Statement", created)
+    
     if created:
         print("2. Statement")                             
         queue = django_rq.get_queue("default", autocommit=True)
