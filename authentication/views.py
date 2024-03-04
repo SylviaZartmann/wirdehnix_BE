@@ -1,17 +1,13 @@
-from django.contrib.auth.models import User
-from django.contrib.auth import logout, get_user_model, authenticate
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
+from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import permission_classes, authentication_classes, parser_classes
+from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.parsers import JSONParser, FormParser
 
 from authentication.serializer import LoginSerializer, RegisterSerializer
 from . import utils
@@ -21,7 +17,7 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save() # das erste, weil sonst nicht validated_data verarbeitet werden kann
+            serializer.save()
             user = get_user_model().objects.get(email=serializer.validated_data['email'])
             token, created = Token.objects.get_or_create(user=user)
             utils.send_activationmail_to_user(user, token)
@@ -36,7 +32,7 @@ class RegisterView(APIView):
     
 
 
-class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht automatisch einen token
+class LoginView(ObtainAuthToken): 
     
     serializer_class = LoginSerializer
     
@@ -48,7 +44,7 @@ class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht
             userData = serializer.validated_data
             email = userData.get('email')
             
-            if email: # wir haben eine valide email adresse hie 
+            if email: 
                 try:
                     user = get_user_model().objects.get(email=userData['email'])
                     token, created = Token.objects.get_or_create(user=user)
@@ -63,7 +59,7 @@ class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht
                 return Response('Email for the ass!', status=status.HTTP_400_BAD_REQUEST)
                             
                             
-        else: # das ist der Teil, wenn serializer is nicht valid! Warum auch immer .. 
+        else: 
             email = serializer.data.get('email')
             if not email: 
                 return Response('Email is missing!', status=status.HTTP_400_BAD_REQUEST)
@@ -78,7 +74,7 @@ class LoginView(ObtainAuthToken): # ObtainAuthToken, generiert in dieser ansicht
                 return Response('User not born yet!', status=status.HTTP_404_NOT_FOUND)
             return Response('Invalid data', status=status.HTTP_400_BAD_REQUEST)                
 
-@permission_classes((IsAuthenticated,)) # macht Sinn, weil mans sonst gar nicht sehen kann
+@permission_classes((IsAuthenticated,)) 
 @authentication_classes((TokenAuthentication,)) 
 class LogoutView(APIView):
     

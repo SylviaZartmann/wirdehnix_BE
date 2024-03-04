@@ -4,7 +4,6 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.tokens import default_token_generator
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -31,7 +30,7 @@ class RegisterSerializer(serializers.ModelSerializer):
        
         email = value['email']   
         try:
-            validate_email(email) # Django built in Funktion, überprüft, ob valide Email Addresse
+            validate_email(email) 
         except ValidationError: 
             raise serializers.ValidationError('Email address invalid!')
         if get_user_model().objects.filter(email=email).exists():
@@ -45,11 +44,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         else:
             try: 
-                validate_password(password) # Django built in Funktion, überprüft, ob das Passwort den Sicherheitsrichtlinien entspricht
-            except ValidationError: # Hier wird die Ausnahme abgefangen, falls das Passwort nicht den Anforderungen entspricht
-                raise serializers.ValidationError('Password insecure!') # Wenn ValidationError, wird entsprechende Fehlermeldung über Serialisierer zurückgegeben. bedeutet, das Passwort nicht sicher
+                validate_password(password)
+            except ValidationError: 
+                raise serializers.ValidationError('Password insecure!')
             
-        return value # Wenn Passwort den Anforderungen entspricht, wird das ursprüngliche Passwort zurückgegeben.
+        return value
         
     def create(self, valid_data):
         del valid_data["conf_password"]
@@ -61,29 +60,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return new_user
     
 
-
-# class ActivateUserSerializer(serializers.Serializer): # gibt dir mehr Flexibilität, ermöglicht es, benutzerdefinierte Validierungslogik ohne die automatische Modellerstellungsfunktionalität bereitzustellen       
-#     token = serializers.CharField() # vorübergehend ein Feld erstellen, was es danach so nicht mehr gibt
-        
-#     def val_token(self, value):
-            
-#         for new_user in get_user_model().objects.filter(is_active=False): # in vorheriger Funktion eingefügt
-#             if default_token_generator.check_token(new_user, value): # wir checken in den Benutzern, ob das übergebene Token mit einem vorhandenen Token übereinstimmt
-#                 new_user.is_active = True # trifft es einen Token, wird is_active auf True gesetzt
-#                 new_user.save() # die Änderungen werden gespeichert
-#                 return value # geben alles zurück
-            
-#         raise serializers.ValidationError("Token provided is invalid!") # wenn kein passender Benutzer gefunden wird, gibts nen Fehler
-        
-
-class LoginSerializer(serializers.Serializer): # wir wollen mit email und passwort einloggen
-    email = serializers.EmailField(required=True) # vorübergehend vorhandene Daten, die nicht gespeichert werden, nur abgeglichen
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True) 
     password = serializers.CharField(write_only=True, required=True)
       
     def validate(self, data):
-        user = utils.gibbet_den_user(data["email"], data["password"]) # schreibweise ggfs ["email"] - kompletter user wird returnt - spezielle data wird gecheckt
-        if user: #wird nur returnt, wenn passwort korrekt
+        user = utils.gibbet_den_user(data["email"], data["password"]) 
+        if user: 
             if user.is_active:
-                return {'username': user.username, 'email': user.email, 'password': user.password} # in der view, falls ma das brauchen - in der view wird der serializer aufgerufen
+                return {'username': user.username, 'email': user.email, 'password': user.password} 
         raise serializers.ValidationError("Invalid login data")
     

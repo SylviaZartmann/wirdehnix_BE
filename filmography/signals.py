@@ -14,20 +14,13 @@ def video_post_save(sender, instance, created, **kwargs):
     # Define resolutions to convert the video to
     # Enqueue background jobs to convert the video to different resolutions
     
-    print("1. Statement", created)
-    
-    if created:
-        print("2. Statement")                             
+    if created:                            
         queue = django_rq.get_queue("default", autocommit=True)
-        print("3. Statement") 
         resolutions = ["480p", "720p", "1080p"]
-        print("4. Statement")                 
         for resolution in resolutions:                             
             queue.enqueue(convert_video, instance.video_file.path, resolution)
-        print("5. Statement")    
 
 
-# DONT TOUCH !
 @receiver(post_delete, sender=Filmography)
 def video_post_delete(sender, instance, **kwargs):
     if instance.video_file:
